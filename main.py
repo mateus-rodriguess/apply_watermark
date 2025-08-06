@@ -23,7 +23,7 @@ def apply_image_watermark(
     try:
         watermark = Image.open(watermark_path).convert("RGBA")
     except Exception as error:
-        logging.error(f"Erro ao abrir a marca d'água: {error}")
+        logging.error(f"Error opening watermark: {error}")
         raise SystemExit(1)
 
     if watermark_scale != 1.0:
@@ -55,7 +55,7 @@ def apply_image_watermark(
                 if ratio < 1:
                     new_size = (int(orig_width * ratio), int(orig_height * ratio))
                     base_image = base_image.resize(new_size, Image.Resampling.LANCZOS)
-                    logging.info(f"{filename} redimensionado para {new_size}")
+                    logging.info(f"{filename} resized to {new_size}")
 
             watermark_layer = Image.new("RGBA", base_image.size, (0, 0, 0, 0))
 
@@ -83,47 +83,51 @@ def apply_image_watermark(
             watermarked_image.save(output_path, **save_params)
             os.remove(filepath)
 
-            logging.info(f"Processado: {filename}")
+            logging.info(f"Processed: {filename}")
 
         except Exception as error:
-            logging.error(f"Erro ao processar {filename}: {error}")
+            logging.error(f"Error processing {filename}: {error}")
             if error_folder:
-                erro_path = os.path.join(error_folder, filename)
+                error_path = os.path.join(error_folder, filename)
                 try:
-                    shutil.move(filepath, erro_path)
-                    logging.info(f"Arquivo {filename} movido para a pasta de erros.")
+                    shutil.move(filepath, error_path)
+                    logging.info(f"File {filename} moved to error folder.")
                 except Exception as move_error:
                     logging.error(
-                        f"Erro ao mover {filename} para a pasta de erros: {move_error}"
+                        f"Error moving {filename} to error folder: {move_error}"
                     )
 
 
 def main(
-    input_folder: str = typer.Option(..., "--input", "-i", help="Pasta de entrada"),
-    output_folder: str = typer.Option(..., "--output", "-o", help="Pasta de saída"),
+    input_folder: str = typer.Option(
+        ..., "--input", "-i", help="Input folder with images"
+    ),
+    output_folder: str = typer.Option(
+        ..., "--output", "-o", help="Output folder for processed images"
+    ),
     error_folder: str = typer.Option(
-        None, "--error", "-e", help="Pasta de saída caso de erro"
+        None, "--error", "-e", help="Folder for images with processing errors"
     ),
     watermark: str = typer.Option(
-        "watermark.png", "--watermark", "-w", help="Caminho da marca d'água"
+        "watermark.png", "--watermark", "-w", help="Path to the watermark image"
     ),
     opacity: float = typer.Option(
-        0.3, "--opacity", "-p", help="Opacidade da marca d'água (0 a 1)"
+        0.3, "--opacity", "-p", help="Watermark opacity (0 to 1)"
     ),
     max_width: int = typer.Option(
-        0, "--max-width", help="Largura máxima para redimensionar (0 para ignorar)"
+        0, "--max-width", help="Maximum width for resizing (0 to ignore)"
     ),
     max_height: int = typer.Option(
-        0, "--max-height", help="Altura máxima para redimensionar (0 para ignorar)"
+        0, "--max-height", help="Maximum height for resizing (0 to ignore)"
     ),
     spacing: int = typer.Option(
-        50, "--spacing", "-s", help="Espaçamento entre marcas d'água (em pixels)"
+        50, "--spacing", "-s", help="Spacing between watermark tiles (in pixels)"
     ),
     watermark_scale: float = typer.Option(
         1.0,
         "--watermark-scale",
         "-ws",
-        help="Escala da marca d'água (ex: 0.5 = 50%, 2.0 = 200%)",
+        help="Watermark scale (e.g. 0.5 = 50%, 2.0 = 200%)",
     ),
 ):
     apply_image_watermark(
@@ -141,6 +145,6 @@ def main(
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    # Exemplo:
+    # Example:
     # python main.py --input ./in --output ./out --error ./error --watermark ./watermark.png --opacity 0.8 --spacing 50 --watermark-scale 0.2 --max-width 500 --max-height 500
     typer.run(main)

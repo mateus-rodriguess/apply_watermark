@@ -1,28 +1,30 @@
 # 🖼️ apply_watermark
 
-Um script de linha de comando em Python para aplicar uma **marca d'água em padrão de repetição (tile)** sobre imagens de uma pasta.
+A Python command-line script to apply a **tiled watermark** over images in a folder.
 
 ---
 
-## 📦 Requisitos
+## 📦 Requirements
 
-- Python 3.8 ou superior
+- Python 3.8 or higher
 - [Pillow](https://pypi.org/project/Pillow/)
 - [Typer](https://pypi.org/project/typer/)
 
-Instale as dependências:
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 🚀 Como usar
+---
+
+## 🚀 How to use
 
 ```bash
 python main.py \
  --input ./in \
  --output ./out \
- --error ./erro \
+ --error ./error \
  --watermark ./watermark.png \
  --opacity 0.8 \
  --spacing 50 \
@@ -31,52 +33,65 @@ python main.py \
  --max-height 800
 ```
 
+---
+
+## ⚙️ Parameters
+
+| Parameter                  | Description                                                      |
+| -------------------------- | ---------------------------------------------------------------- |
+| `--input`, `-i`            | Path to the input folder with the images                         |
+| `--output`, `-o`           | Path to the output folder for processed images                   |
+| `--error`, `-e`            | Folder to move images that failed during processing              |
+| `--watermark`, `-w`        | Path to the `.png` watermark image with transparency             |
+| `--opacity`, `-p`          | Watermark opacity (0.0 to 1.0). Example: `0.3` for 30%           |
+| `--spacing`, `-s`          | Spacing in pixels between each repeated watermark tile           |
+| `--watermark-scale`, `-ws` | Scale of the watermark image (e.g. `0.5` = 50%, `2.0` = 200%)    |
+| `--max-width`              | Maximum width of the output image (use `0` to disable resizing)  |
+| `--max-height`             | Maximum height of the output image (use `0` to disable resizing) |
+
+---
+
+## 🖼️ Example
+
 ```bash
-⚙️ Parâmetros
-Parâmetro Descrição
---input, -i Caminho da pasta de entrada com as imagens
---output, -o Caminho da pasta de saída para imagens processadas
---error, -e Pasta para mover imagens com erro durante o processo
---watermark, -w Caminho da imagem .png com transparência que será usada como marca d’água
---opacity, -p Opacidade da marca d água (0.0 a 1.0). Ex: 0.3 para 30%
---spacing, -s Espaçamento entre cada marca d’água repetida na imagem
---watermark-scale, -ws Escala da marca d’água (ex: 0.5 = 50%, 2.0 = 200%)
---max-width Largura máxima da imagem de saída (0 para não redimensionar)
---max-height Altura máxima da imagem de saída (0 para não redimensionar)
+python main.py \
+ --input ./in \
+ --output ./out \
+ --error ./error \
+ --watermark ./watermark.png \
+ --opacity 0.8 \
+ --spacing 50 \
+ --watermark-scale 0.2 \
+ --max-width 1024 \
+ --max-height 768
 ```
 
-## 🖼️ Exemplo prático
+This command:
 
-```bash
-python main.py --input ./in --output ./out --error ./error --watermark ./watermark.png --opacity 0.8 --spacing 50 --watermark-scale 0.2  --max-width 1024 --max-height 768
-```
+- Applies `watermark.png` with 80% opacity
+- Scales the watermark to 20% of its original size
+- Adds 50px spacing between each tile
+- Resizes the image to a maximum of `1024x768`
+- Moves failed images to the `error` folder
 
-Esse comando:
+---
 
-Aplica a imagem watermark.png com 50% de opacidade,
+## 🧼 Behavior
 
-Escala a marca d'água para 40% do tamanho original,
+- Input images are deleted after successful processing
+- Failed images are moved to the error folder (if defined)
 
-Adiciona espaçamento de 30px entre cada repetição da marca,
-
-Redimensiona a imagem original para no máximo 1024x768,
-
-Move imagens com erro para a pasta erro.
-
-## 🧼 Comportamento
-
-As imagens de entrada são removidas após o processamento com sucesso.
-
-Imagens com erro são movidas para a pasta de erro (caso definida).
+---
 
 ## 🧪 Logs
 
-O script imprime logs no terminal:
+The script prints logs to the terminal:
 
-INFO: Indica progresso e redimensionamento.
+- `INFO`: Progress and resizing messages
+- `ERROR`: Reading, writing, or format errors
 
-ERROR: Mostra falhas de leitura, escrita ou formatação.
+---
 
-## 🧊 Dica
+## 🧊 Tip
 
-Use marcas d’água .png com fundo transparente para melhor resultado.
+Use transparent `.png` images as watermarks for best results.
